@@ -10,6 +10,7 @@
     "license": "MIT",
     "private": "false",
     "scripts" : {
-        "server" : "node --watch index.js"
+        "start" : "node src/index.js",
+        "dev" : "node --watch src/index.js"
     }
 }
