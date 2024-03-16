@@ -1,0 +1,15 @@
+{
+    "dependencies": {
+        "express": "^4.18.3"
+    },
+    "name": "mal-chart-backend",
+    "version": "1.0.0",
+    "description": "Backend for mal-chart app",
+    "main": "index.js",
+    "type": "module",
+    "license": "MIT",
+    "private": "false",
+    "scripts" : {
+        "server" : "node --watch index.js"
+    }
+}
