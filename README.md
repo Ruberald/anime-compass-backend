@@ -36,7 +36,7 @@ To run the server in development mode with automatic restart on file changes, us
 yarn dev
 ```
 
-The server will be accessible at http://localhost:3000 by default.
+The server will be accessible at http://localhost:8080 by default.
 
 ## Dependencies
 
