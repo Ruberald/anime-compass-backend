@@ -1,12 +1,14 @@
 import express from 'express';
 import fs from 'node:fs';
 import https from 'https';
+import dotenv from 'dotenv';
 // import queryString from 'querystring';
 
 export const app = express();
+dotenv.config();
 
-const client_id = fs.readFileSync('src/.env').toString().trim();
-
+//const client_id = fs.readFileSync('src/.env').toString().trim();
+const client_id = process.env.client_id;
 app.get('/', (_req, res) => {
     res.send('<b>Hello World!</b>');
 })
