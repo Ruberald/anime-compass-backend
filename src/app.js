@@ -1,14 +1,13 @@
 import express from 'express';
-import fs from 'node:fs';
 import https from 'https';
-// import queryString from 'querystring';
+import dotenv from 'dotenv';
 
 export const app = express();
+dotenv.config();
 
-const client_id = fs.readFileSync('src/.env').toString().trim();
-
+const client_id = process.env.client_id;
 app.get('/', (_req, res) => {
-    res.send('<b>Hello World!</b>');
+    res.send('Hello World!');
 })
 
 app.get('/hey/:user', (_req, res) => {
@@ -18,16 +17,10 @@ app.get('/hey/:user', (_req, res) => {
 
 app.get('/details/:user', async (req, res) => {
     try {
-        // const queryParams = queryString.stringify({
-        //     fields: `list_status,genre`,
-        //     limit: 4,
-        //     status: 'completed',
-        //     sort: 'list_score'
-        // });
         const user = req.params.user;
         const options = {
             hostname: 'api.myanimelist.net',
-            path: `/v2/users/${user}/animelist?fields=list_status,genres&limit=4&status=completed&sort=list_score`,
+            path: `/v2/users/${user}/animelist?fields=list_status,genres&limit=1000&status=completed&sort=list_score`,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -43,7 +36,24 @@ app.get('/details/:user', async (req, res) => {
             });
 
             responseFromApi.on('end', () => {
-                res.json(JSON.parse(data));
+                const jsonResponse = JSON.parse(data);
+                const genreScoreMap = {};
+
+                jsonResponse.data.forEach(animeEntry => {
+                    const animeGenres = animeEntry.node.genres;
+                    const animeScore = animeEntry.list_status.score;
+
+                    animeGenres.forEach(genre => {
+                        const genreName = genre.name;
+                        if (genreScoreMap[genreName]) {
+                            genreScoreMap[genreName] += animeScore;
+                        } else {
+                            genreScoreMap[genreName] = animeScore;
+                        }
+                    });
+                });
+
+                res.json(genreScoreMap);
             });
         });
 
@@ -58,5 +68,3 @@ app.get('/details/:user', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch anime information' });
     }
 });
-// module.exports = app;
-
